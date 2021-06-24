@@ -87,12 +87,16 @@ if __name__ == "__main__":
         if got_order == 'SELL' :
             lineNotify.send_pic(symbol,'BNBUSDT-Close SELL then Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
         #  close sell then open buy
+        if got_order == 'empty' :
+            lineNotify.send_pic(symbol,'BNBUSDT-Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
         with open("order_"+symbol+".txt",'w') as f:
             f.write("BUY")
     elif sign == 'OPEN SELL' : 
         if got_order == 'BUY' :
             lineNotify.send_pic(symbol,'BNBUSDT-Close BUY then Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
         #  close buy then open sell
+        if got_order == 'empty' :
+            lineNotify.send_pic(symbol,'BNBUSDT-Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
         with open("order_"+symbol+".txt",'w') as f:
             f.write("SELL")
     elif sign == 'CLOSE BUY'and got_order == 'BUY' :

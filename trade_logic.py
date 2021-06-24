@@ -27,5 +27,7 @@ def test_signal(df):
         signal_test= 'CLOSE SELL'
     elif up2_over_bb == True and down1_under_bb ==True:
         signal_test= 'OPEN SELL'
+    elif up1==True and df.iloc[df_len-1]["close"] < df.iloc[df_len-1]["BBM_21_2.0"] and ten_gap == True:
+        signal_test= 'OPEN BUY'
     
     return signal_test
