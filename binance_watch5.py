@@ -109,5 +109,5 @@ if __name__ == "__main__":
             f.write("empty")
     
     with open('syslog.txt','w') as f:
-        f.write("Log of V5.1 " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
+        f.write("Log of V5.2 " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
             
