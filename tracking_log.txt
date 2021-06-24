@@ -1,0 +1,1 @@
+06/24/2021, 10:18:18	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty] 
