@@ -6,7 +6,8 @@ import config
 import lineNotify
 from datetime import datetime 
 import mplfinance as mpf
-import trade_logic
+import trade_logic_4level as trade_logic
+from PIL import Image
 
 client = Client(config.API_KEY, config.API_SECRET)
 
@@ -148,6 +149,28 @@ def plotfig_1h(df,df_indy,figname="BNBUSDT",sign=''):
             ,scale_width_adjustment=dict(lines=0.5)
             ,savefig=dict(fname=figname+'_1H.png',dpi=100,pad_inches=0.25))
 
+def combind_img(symbol):
+    images = [Image.open(x) for x in [symbol+'_1D.png', symbol+'_4H.png',symbol+'_1H.png',symbol+'_15M.png']]
+    widths, heights = zip(*(i.size for i in images))
+
+    total_width = max(widths)*2
+    max_height = max(heights)*2
+
+    new_im = Image.new('RGB', (total_width, max_height))
+
+    x_offset = 0
+    y_offset = 0
+    i =0
+    for im in images:
+        i+=1
+        if i == 3 :
+            y_offset += im.size[1]
+            x_offset = 0
+        new_im.paste(im, (x_offset,y_offset))
+        x_offset += im.size[0]
+
+    new_im.save(symbol+'.png')
+
 if __name__ == "__main__":
     # lineNotify.send_alert('Start monitor')
     # print("Currently .... {}".format(datetime.now().strftime("%d/%m/%Y %H:%M")))
@@ -157,57 +180,86 @@ if __name__ == "__main__":
     
     # -- Period 1 Days------------------------
     df_1D,df_indy_1D = get_future(symbol=symbol,startdt='60 day ago UTC',period=Client.KLINE_INTERVAL_1DAY)
-    sign_1D = trade_logic.test_signal(df_indy_1D)
+    sign_1D = trade_logic.test_signal_level(df_indy_1D)
     plotfig_1d(df_1D,df_indy_1D,symbol,sign_1D)
     print("Day signal  = "+sign_1D)
 
     # -- Period 4H------------------------
     df_4H,df_indy_4H = get_future(symbol=symbol,startdt='15 day ago UTC',period=Client.KLINE_INTERVAL_4HOUR)
-    sign_4H = trade_logic.test_signal(df_indy_4H)
+    sign_4H = trade_logic.test_signal_level(df_indy_4H)
     plotfig_4h(df_4H,df_indy_4H,symbol,sign_4H)
     print("4H signal  = "+sign_4H)
 
     # -- Period 1H------------------------
     df_1H,df_indy_1H = get_future(symbol=symbol,startdt='7 day ago UTC',period=Client.KLINE_INTERVAL_1HOUR)
-    sign_1H = trade_logic.test_signal(df_indy_1H)
+    sign_1H = trade_logic.test_signal_level(df_indy_1H)
     plotfig_1h(df_1H,df_indy_1H,symbol,sign_1H)
     print("1H signal  = "+sign_1H)
     
     # -- Period 15 Mins------------------------
     df,df_indy = get_future(symbol=symbol,startdt='1 day ago UTC',period=Client.KLINE_INTERVAL_15MINUTE)
-    sign = trade_logic.test_signal(df_indy)
+    sign = trade_logic.test_signal_level(df_indy)
     plotfig_15m(df,df_indy,symbol,sign)
     print("15Min signal  = "+sign)
 
     with open('tracking_log.txt','a') as f:
-        f.write(datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t ["+symbol+"]    ")
-        f.write("sign = [{}] and status = [{}]  last price {}\n".format(sign,got_order,client.get_ticker(symbol=symbol)['bidPrice']))
+        f.write(datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t ["+symbol+"]  ============")
+        f.write("Day signal = [{}] 4H signal = [{}]  1H signal = [{}] 15M signal = [{}] \n".format(sign_1D,sign_4H,sign_1H,sign))
+        f.write("last price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
 
-    if sign == 'OPEN BUY' : 
-        if got_order == 'SELL' :
-            lineNotify.send_pic(symbol+'_15M','BNBUSDT-Close SELL then Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        #  close sell then open buy
-        if got_order == 'empty' :
-            lineNotify.send_pic(symbol+'_15M','BNBUSDT-Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        with open("order_"+symbol+".txt",'w') as f:
-            f.write("BUY")
-    elif sign == 'OPEN SELL' : 
-        if got_order == 'BUY' :
-            lineNotify.send_pic(symbol+'_15M','BNBUSDT-Close BUY then Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        #  close buy then open sell
-        if got_order == 'empty' :
-            lineNotify.send_pic(symbol+'_15M','BNBUSDT-Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        with open("order_"+symbol+".txt",'w') as f:
-            f.write("SELL")
-    elif sign == 'CLOSE BUY'and got_order == 'BUY' :
-        lineNotify.send_pic(symbol+'_15M','BNBUSDT-Close BUY only at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        with open("order_"+symbol+".txt",'w') as f:
-            f.write("empty")
-    elif sign == 'CLOSE SELL'and got_order == 'SELL' :
-        lineNotify.send_pic(symbol+'_15M','BNBUSDT-Close SELL only at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
-        with open("order_"+symbol+".txt",'w') as f:
-            f.write("empty")
-    
+    combind_img(symbol)
+    lineNotify.send_pic(symbol,msg="Day signal = [{}] 4H signal = [{}]  1H signal = [{}] 15M signal = [{}] \n".format(sign_1D,sign_4H,sign_1H,sign))
+
+    # ถ้า 2 เทรนใหญ่ไปทางไหน ให้ตามทางนั้น 
+    if sign_1D.find('Buy') + sign_4H.find('Buy') >= 2 :
+        print('Major trend is Buy')
+        if (sign_1H == 'Buy 100' or sign_1H == 'Buy 50')  and  (sign == 'Buy 100' or sign == 'Buy 50') :
+            if got_order == 'empty' :
+                lineNotify.send_pic(symbol,'Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open("order_"+symbol+".txt",'w') as f:
+                    f.write("BUY")
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tOpen long at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+            elif got_order == 'SELL' :
+                lineNotify.send_pic(symbol,'Close SELL then Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tClose Short at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open("order_"+symbol+".txt",'w') as f:
+                    f.write("BUY")
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tOpen Buy at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+        elif (sign.find('hange to Sell')>0) and got_order == 'BUY' :
+            lineNotify.send_pic(symbol,'Close BUY only at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+            with open('tracking_log.txt','a') as t:
+                t.write("\tClose long at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+            with open("order_"+symbol+".txt",'w') as f:
+                f.write("empty")
+
+    elif sign_1D.find('Sell') + sign_4H.find('Sell') >= 2 :
+        print('Major trend is Sell')
+        if (sign_1H == 'Sell 100' or sign_1H == 'Sell 50')  and  (sign == 'Sell 100' or sign == 'Sell 50') :
+            if got_order == 'empty' :
+                lineNotify.send_pic(symbol,'Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open("order_"+symbol+".txt",'w') as f:
+                    f.write("SELL")
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tOpen 100 percent short at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+
+            elif got_order == 'BUY' :
+                lineNotify.send_pic(symbol,'Close BUY then Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tClose long at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+                with open("order_"+symbol+".txt",'w') as f:
+                    f.write("SELL")
+                with open('tracking_log.txt','a') as t:
+                    t.write("\tOpen 100 percent  short at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+        elif (sign.find('hange to Buy')>0) and got_order == 'SELL' :
+            lineNotify.send_pic(symbol,'Close SELL only at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+            with open('tracking_log.txt','a') as t:
+                t.write("\tClose short at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
+            with open("order_"+symbol+".txt",'w') as f:
+                f.write("empty")
+
     with open('syslog.txt','w') as f:
-        f.write("Log of V6.0 " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
+        f.write("Log of V6.0-4level " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
             
