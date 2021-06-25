@@ -203,7 +203,7 @@ if __name__ == "__main__":
     print("15Min signal  = "+sign)
 
     with open('tracking_log.txt','a') as f:
-        f.write(datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t ["+symbol+"]  ============")
+        f.write(datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t ["+symbol+"]  ============\n")
         f.write("Day signal = [{}] 4H signal = [{}]  1H signal = [{}] 15M signal = [{}] \n".format(sign_1D,sign_4H,sign_1H,sign))
         f.write("last price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
 
@@ -213,7 +213,8 @@ if __name__ == "__main__":
     # ถ้า 2 เทรนใหญ่ไปทางไหน ให้ตามทางนั้น 
     if sign_1D.find('Buy') + sign_4H.find('Buy') >= 2 :
         print('Major trend is Buy')
-        if (sign_1H == 'Buy 100' or sign_1H == 'Buy 50')  and  (sign == 'Buy 100' or sign == 'Buy 50') :
+        if (sign_1H == 'Buy 100'  and  (sign == 'Buy 100' or sign == 'Buy 50'))  or \
+            (sign_1H == 'Buy 50' and sign == 'Buy 100'):
             if got_order == 'empty' :
                 lineNotify.send_pic(symbol,'Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
                 with open("order_"+symbol+".txt",'w') as f:
@@ -237,7 +238,8 @@ if __name__ == "__main__":
 
     elif sign_1D.find('Sell') + sign_4H.find('Sell') >= 2 :
         print('Major trend is Sell')
-        if (sign_1H == 'Sell 100' or sign_1H == 'Sell 50')  and  (sign == 'Sell 100' or sign == 'Sell 50') :
+        if (sign_1H == 'Sell 100'  and  (sign == 'Sell 100' or sign == 'Sell 50')) or \
+            (sign_1H == 'Sell 50' and sign == 'Sell 100') :
             if got_order == 'empty' :
                 lineNotify.send_pic(symbol,'Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
                 with open("order_"+symbol+".txt",'w') as f:

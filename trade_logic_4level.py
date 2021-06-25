@@ -157,13 +157,21 @@ def test_signal_level(df):
         signal_test= 'Change to Buy'
     elif ch2sell :
         signal_test= 'Change to Sell'
-    elif beware_sell_ema or beware_sell_ema2:
+    elif beware_sell_ema :
         signal_test= 'Beware change to Sell [not pass EMA]'
-    elif beware_sell_bbm or beware_sell_bbm2:
+    elif beware_sell_ema2:
+        signal_test= 'Beware2 change to Sell [not pass EMA]'
+    elif beware_sell_bbm :
         signal_test= 'Beware change to Sell [not pass BBM]'
-    elif beware_buy_ema or beware_buy_ema2:
+    elif  beware_sell_bbm2:
+        signal_test= 'Beware2 change to Sell [not pass BBM]'
+    elif beware_buy_ema :
         signal_test= 'Beware change to Buy [not pass EMA]'
-    elif beware_buy_bbm or beware_buy_bbm2:
+    elif beware_buy_ema2:
+        signal_test= 'Beware2 change to Buy [not pass EMA]'
+    elif beware_buy_bbm :
         signal_test= 'Beware change to Buy [not pass BBM]'
+    elif beware_buy_bbm2:
+        signal_test= 'Beware2 change to Buy [not pass BBM]'
 
     return signal_test
