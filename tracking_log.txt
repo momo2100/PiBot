@@ -1,2 +1,11 @@
 06/24/2021, 10:18:18	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty] 
-06/24/2021, 15:08:55	 [BNBUSDT]    sign = [CLOSE SELL] and status = [empty] 
+06/25/2021, 10:38:30	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.33000000
+06/25/2021, 11:01:12	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.89000000
+06/25/2021, 11:04:20	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.68000000
+06/25/2021, 11:05:46	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.07000000
+06/25/2021, 11:06:17	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 305.57000000
+06/25/2021, 11:13:01	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.66000000
+06/25/2021, 11:16:56	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 305.91000000
+06/25/2021, 11:18:19	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 306.07000000
+06/25/2021, 11:27:01	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 304.73000000
+06/25/2021, 11:27:53	 [BNBUSDT]    sign = [CLOSE BUY] and status = [empty]  last price 304.93000000
