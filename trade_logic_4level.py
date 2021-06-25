@@ -120,6 +120,16 @@ def test_signal_level(df):
         df.iloc[df_len-2]["low"] < df.iloc[df_len-2]["BBU_21_2.0"] and \
             df.iloc[df_len-1]["close"] > df.iloc[df_len-1]["open"]
 
+    # ระวังกลับตัว Sell => แท่งก่อนหน้าเขียว แท่งต่อมาแดง high ชน EMA_8 
+    beware_sell_ema2 = df.iloc[df_len-2]["close"] > df.iloc[df_len-2]["open"] and \
+        df.iloc[df_len-1]["close"] < df.iloc[df_len-1]["open"] and \
+            df.iloc[df_len-1]["high"] > df.iloc[df_len-1]["EMA_8"] 
+
+    # ระวังกลับตัว Buy => แท่งก่อนหน้าแดง แท่งต่อมาเขียว low ชน EMA_8 
+    beware_buy_ema2 = df.iloc[df_len-2]["close"] < df.iloc[df_len-2]["open"] and \
+        df.iloc[df_len-1]["close"] > df.iloc[df_len-1]["open"] and \
+            df.iloc[df_len-1]["low"] < df.iloc[df_len-1]["EMA_8"]
+            
 
     if cnd_follow_buy1 or cnd_follow_buy2 or cnd_follow_buy3:
         signal_test= 'Follow Buy'
@@ -137,11 +147,11 @@ def test_signal_level(df):
         signal_test= 'Change to Buy'
     elif ch2sell :
         signal_test= 'Change to Sell'
-    elif beware_sell_ema :
+    elif beware_sell_ema or beware_sell_ema2:
         signal_test= 'Beware change to Sell [not pass EMA]'
     elif beware_sell_bbm :
         signal_test= 'Beware change to Sell [not pass BBM]'
-    elif beware_buy_ema :
+    elif beware_buy_ema or beware_buy_ema2:
         signal_test= 'Beware change to Buy [not pass EMA]'
     elif beware_buy_bbm :
         signal_test= 'Beware change to Buy [not pass BBM]'
