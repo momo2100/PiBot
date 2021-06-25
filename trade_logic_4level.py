@@ -68,21 +68,23 @@ def test_signal_level(df):
             df.iloc[df_len-1]["BBL_21_2.0"] > df.iloc[df_len-2]["BBL_21_2.0"] and \
                 df.iloc[df_len-1]["low"] < df.iloc[df_len-1]["BBM_21_2.0"] < df.iloc[df_len-1]["high"]
 
-    # turn to buy จุดล่าง => แท่งก่อนหน้าเป็นแดง เปิดต่ำกว่า EMA_8 ปิดต่ำกว่า BBL แท่งต่อมาเป็นเขียว ไส้ยาวกว่าแท่งก่อนหน้า EMA_8 < BBM
+    # turn to buy จุดล่าง => แท่งก่อนหน้าเป็นแดง เปิดต่ำกว่า EMA_8 ปิดต่ำกว่า BBL และ RSI_8 ต่ำกว่า30 แท่งต่อมาเป็นเขียว ไส้ยาวกว่าแท่งก่อนหน้า EMA_8 < BBM
     turn2buy100 = df.iloc[df_len-2]["close"] < df.iloc[df_len-2]["open"] and \
         df.iloc[df_len-2]["open"] < df.iloc[df_len-2]["EMA_8"] and \
             df.iloc[df_len-2]["close"] < df.iloc[df_len-2]["BBL_21_2.0"] and \
-                df.iloc[df_len-1]["close"] > df.iloc[df_len-1]["open"] and \
-                    (df.iloc[df_len-1]["high"] - df.iloc[df_len-1]["low"]) > (df.iloc[df_len-2]["high"] - df.iloc[df_len-2]["low"]) and \
-                        df.iloc[df_len-2]["EMA_8"] < df.iloc[df_len-2]["BBM_21_2.0"]
+                df.iloc[df_len-1]["RSI_8"] <= 30 and \
+                    df.iloc[df_len-1]["close"] > df.iloc[df_len-1]["open"] and \
+                        (df.iloc[df_len-1]["high"] - df.iloc[df_len-1]["low"]) > (df.iloc[df_len-2]["high"] - df.iloc[df_len-2]["low"]) and \
+                            df.iloc[df_len-2]["EMA_8"] < df.iloc[df_len-2]["BBM_21_2.0"]
     
-    # turn to sell จุดบน => แท่งก่อนหน้าเป็นเขียว เปิดสูงกว่า EMA_8 ปิดสูงกว่า BBU แท่งต่อมาเป็นแดง ไส้ยาวกว่าแท่งก่อนหน้า EMA_8 > BBM
+    # turn to sell จุดบน => แท่งก่อนหน้าเป็นเขียว เปิดสูงกว่า EMA_8 ปิดสูงกว่า BBU และ RSI_8 สูงกว่า70 แท่งต่อมาเป็นแดง ไส้ยาวกว่าแท่งก่อนหน้า EMA_8 > BBM
     turn2sell100 = df.iloc[df_len-2]["close"] > df.iloc[df_len-2]["open"] and \
         df.iloc[df_len-2]["open"] > df.iloc[df_len-2]["EMA_8"] and \
             df.iloc[df_len-2]["close"] > df.iloc[df_len-2]["BBU_21_2.0"] and \
-                df.iloc[df_len-1]["close"] < df.iloc[df_len-1]["open"] and \
-                    (df.iloc[df_len-1]["high"] - df.iloc[df_len-1]["low"]) > (df.iloc[df_len-2]["high"] - df.iloc[df_len-2]["low"]) and\
-                        df.iloc[df_len-2]["EMA_8"] > df.iloc[df_len-2]["BBM_21_2.0"]
+                df.iloc[df_len-1]["RSI_8"] >= 70 and \
+                    df.iloc[df_len-1]["close"] < df.iloc[df_len-1]["open"] and \
+                        (df.iloc[df_len-1]["high"] - df.iloc[df_len-1]["low"]) > (df.iloc[df_len-2]["high"] - df.iloc[df_len-2]["low"]) and\
+                            df.iloc[df_len-2]["EMA_8"] > df.iloc[df_len-2]["BBM_21_2.0"]
      
     # turn to buy จุดล่าง(แค่ไส้ทะลุ) => แท่งก่อนหน้าเป็นแดง เปิดต่ำกว่า EMA_8 แท่งต่อมาเป็นเขียว low ต่ำกว่า BBL ปิดสูงกว่าตัวที่แล้ว EMA_8 < BBM
     turn2buy50 = df.iloc[df_len-2]["close"] < df.iloc[df_len-2]["open"] and \
