@@ -53,3 +53,5 @@ last price 291.57000000
 last price 292.45000000
 06/25/2021, 17:28:28	 [BNBUSDT]  ============Day signal = [Follow Sell] 4H signal = [Follow Sell]  1H signal = [Buy 50] 15M signal = [Beware change to Sell [not pass EMA]] 
 last price 289.41000000
+06/25/2021, 17:32:32	 [BNBUSDT]  ============Day signal = [Beware change to Sell [not pass EMA]] 4H signal = [Follow Sell]  1H signal = [Buy 50] 15M signal = [Beware change to Buy [not pass EMA]] 
+last price 289.22000000
