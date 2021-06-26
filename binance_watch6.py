@@ -261,11 +261,12 @@ if __name__ == "__main__":
                 t.write("\tClose short at price {}\n".format(client.get_ticker(symbol=symbol)['bidPrice']))
             with open("order_"+symbol+".txt",'w') as f:
                 f.write("empty")
-    elif sign_1H.find('Beware') > 0 and (sign == 'Buy 100' or sign == 'Buy 50'):
-        lineNotify.send_pic(symbol,'Test signal ++ Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+    
+    if sign_1H.find('Beware') > 0 and (sign == 'Buy 100' or sign == 'Buy 50'):
+        lineNotify.send_pic(symbol,'*** Test signal V6.4 ++ Open BUY at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
     elif sign_1H.find('Beware') > 0 and (sign == 'Sell 100' or sign == 'Sell 50'):
-        lineNotify.send_pic(symbol,'Test signal -- Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
+        lineNotify.send_pic(symbol,'*** Test signal V6.4 -- Open SELL at {}'.format(client.get_ticker(symbol=symbol)['bidPrice']))
 
     with open('syslog.txt','w') as f:
-        f.write("Log of V6.0-4level " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
+        f.write("Log of V6.4-4level " +datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\n")
             

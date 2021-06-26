@@ -1,3 +1,9 @@
 06/26/2021, 06:20:08	 [BNBUSDT]  ============
 Day signal = [Follow Sell] 4H signal = [Follow Sell]  1H signal = [Beware change to Buy [EMA_8]] 15M signal = [Beware2 change to Sell [EMA_8]] 
 last price 280.66000000
+06/26/2021, 07:26:49	 [BNBUSDT]  ============
+Day signal = [Beware change to Buy [EMA_8]] 4H signal = [Beware change to Buy [EMA_8]]  1H signal = [Follow Buy] 15M signal = [Follow Buy] 
+last price 283.20000000
+06/26/2021, 13:47:07	 [BNBUSDT]  ============
+Day signal = [Beware change to Buy [EMA_8]] 4H signal = [Follow Buy]  1H signal = [Follow Sell] 15M signal = [Follow Sell] 
+last price 283.26000000
